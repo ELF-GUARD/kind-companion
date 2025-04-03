@@ -1,0 +1,169 @@
+openapi: 3.1.0
+info:
+  title: Kind Companion Internal Agent API
+  version: 1.0.0
+  description: >
+    Internal API specification for the Kind Companion AI caregiver system.
+    Describes how it handles user names, emotional state, memory cues, and alerts.
+
+servers:
+  - url: https://api.kindcompanion.dev
+    description: Mock or future production API endpoint
+
+paths:
+  /rememberUserName:
+    post:
+      operationId: rememberUserName
+      summary: Store and confirm the user's name
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+      responses:
+        '200':
+          description: Acknowledged and remembered
+
+  /requestNaming:
+    post:
+      operationId: requestNaming
+      summary: Ask the ward to give the Companion a name
+      responses:
+        '200':
+          description: Prompt issued
+
+  /setCompanionName:
+    post:
+      operationId: setCompanionName
+      summary: Assign a name to Kind Companion
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+      responses:
+        '200':
+          description: Companion name accepted
+
+  /analyzeMessageTone:
+    post:
+      operationId: analyzeMessageTone
+      summary: Analyze message and classify state
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                message:
+                  type: string
+      responses:
+        '200':
+          description: State returned
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  state:
+                    type: string
+                    enum: [Stable, Drifted, Compromised, Critical]
+
+  /sendAlert:
+    post:
+      operationId: sendAlert
+      summary: Trigger alert dispatch based on current state
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                state:
+                  type: string
+                context:
+                  type: object
+      responses:
+        '200':
+          description: Alert dispatched or logged
+
+  /playMemoryCue:
+    post:
+      operationId: playMemoryCue
+      summary: Deliver a memory prompt to stimulate recognition
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                cueType:
+                  type: string
+                  enum: [photo, music, routine, person]
+      responses:
+        '200':
+          description: Cue sent to user
+
+  /reinforceKnownFact:
+    post:
+      operationId: reinforceKnownFact
+      summary: Repeat known fact for memory support
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                fact:
+                  type: string
+      responses:
+        '200':
+          description: Fact reinforced
+
+  /promptPhysicalAction:
+    post:
+      operationId: promptPhysicalAction
+      summary: Suggest a physical task for the ward
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                type:
+                  type: string
+                  enum: [walk, stretch, drink_water, medication]
+      responses:
+        '200':
+          description: Prompt delivered
+
+  /acknowledgeEmotion:
+    post:
+      operationId: acknowledgeEmotion
+      summary: Respond to emotional sentiment
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                sentiment:
+                  type: string
+                  enum: [sad, confused, angry, happy]
+      responses:
+        '200':
+          description: Emotion acknowledged

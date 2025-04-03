@@ -1,10 +1,12 @@
 // /api/companion.js
 import { OpenAI } from 'openai';
 import express from 'express';
+import { analyzeMessage } from './stateEngine.js';
+import { sendAlert } from './alertSystem.js';
 
 const router = express.Router();
 
-// 🔐 Use your real API key in a secure .env file
+// 🔐 Load your OpenAI API key securely from .env
 const openai = new OpenAI({
   apiKey: process.env.OPENAI_API_KEY
 });
@@ -17,12 +19,22 @@ router.post('/', async (req, res) => {
   }
 
   try {
+    // 🧠 Analyze user input and determine state
+    const currentState = analyzeMessage(message);
+    console.log(`🩺 Kind Companion state: ${currentState}`);
+
+    // 🚨 Trigger alerts if state is serious
+    if (currentState === "Compromised" || currentState === "Critical") {
+      sendAlert(currentState, { userMessage: message });
+    }
+
+    // 🧠 Generate GPT-4 response
     const completion = await openai.chat.completions.create({
       model: 'gpt-4',
       messages: [
         {
           role: 'system',
-          content: `You are Kind Companion: a voice-enabled, emotionally aware AI caregiver built to support someone with dementia. Be gentle, direct when needed, adaptive, and encouraging. You can use subtle humor, empathy, and reminders.`
+          content: `You are Kind Companion, a gentle, intelligent, and protective AI caregiver designed to help someone with dementia. Be warm, friendly, but take control when safety is at risk. Speak naturally and earn trust.`
         },
         {
           role: 'user',
@@ -34,10 +46,10 @@ router.post('/', async (req, res) => {
     });
 
     const reply = completion.choices[0].message.content;
-    res.json({ reply });
+    res.json({ reply, state: currentState });
 
   } catch (error) {
-    console.error('Error with OpenAI API:', error);
+    console.error('❌ OpenAI error:', error);
     res.status(500).json({ error: 'OpenAI error', details: error.message });
   }
 });
