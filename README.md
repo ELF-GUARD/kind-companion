@@ -25,5 +25,32 @@
 - Care Hub dashboard
 
 ---
+📡 Kind Companion Internal API Spec
+This project includes a full Swagger/OpenAPI 3.1 specification describing the internal actions that Kind Companion can perform.
+
+These actions include:
+
+🎙️ Asking and remembering the user’s name
+
+🧠 Analyzing message tone and tracking safety state (Stable → Critical)
+
+🔔 Triggering caregiver alerts when risk is detected
+
+🧩 Reinforcing known facts and cues to support memory
+
+💬 Responding to emotional sentiment (sadness, confusion, happiness)
+
+🏃 Prompting physical tasks (drink water, stretch, etc.)
+
+📄 View the full API spec online:
+🔗 Swagger Editor → Paste in kind-companion-actions.yaml
+
+🛠️ You can use this spec to:
+
+Generate RESTful routes
+
+Mock GPT Agent behavior
+
+Connect a frontend agent to real-time stateful logic
 
 **Built with ❤️ by Edward R. Aylward and GPT-4**
